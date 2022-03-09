@@ -1,0 +1,15 @@
+{
+  "name": "kolorowanie-grafu",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "./node_modules/.bin/onchange.cmd \"main.js\" -- node \"main.js\""
+  },
+  "dependencies": {
+    "onchange": "^7.1.0"
+  },
+  "devDependencies": {},
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
