@@ -99,3 +99,8 @@ const greedyColoring = (graphData) => {
 };
 // console.table(greedyColoring(generateGraph(40, 50)));
 console.table(greedyColoring(parseData(readFile("myciel4.txt"))));
+
+exports.myciel4 = JSON.stringify(
+  greedyColoring(parseData(readFile("myciel4.txt")))
+);
+exports.random = JSON.stringify(greedyColoring(generateGraph(30, 50)));

@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "./node_modules/.bin/onchange.cmd \"main.js\" -- node \"main.js\""
+    "start": "./node_modules/.bin/onchange.cmd -i -k \"**/*.js\" -- node  \"index.js\""
   },
   "dependencies": {
+    "express": "^4.17.3",
     "onchange": "^7.1.0"
   },
   "devDependencies": {},
