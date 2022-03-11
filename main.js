@@ -76,4 +76,26 @@ const generateGraph = (size, saturation) => {
   return toReturn;
 };
 
-console.table(generateGraph(40, 50));
+// console.table(generateGraph(40, 50));
+
+const greedyColoring = (graphData) => {
+  let toReturn = JSON.parse(JSON.stringify(graphData));
+  for (let i = 0; i < toReturn.length; i++) {
+    toReturn[i].unshift(0);
+  }
+  for (let i = 0; i < toReturn.length; i++) {
+    let lowestFreeColor = 1;
+    for (let j = 1; j < toReturn[i].length; j++) {
+      const inspectedIndex = toReturn[i][j];
+      if (lowestFreeColor == toReturn[inspectedIndex][0]) {
+        j = 0;
+        lowestFreeColor++;
+      }
+    }
+    toReturn[i][0] = lowestFreeColor;
+  }
+
+  return toReturn;
+};
+// console.table(greedyColoring(generateGraph(40, 50)));
+console.table(greedyColoring(parseData(readFile("myciel4.txt"))));
