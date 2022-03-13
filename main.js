@@ -104,3 +104,37 @@ exports.myciel4 = JSON.stringify(
   greedyColoring(parseData(readFile("myciel4.txt")))
 );
 exports.random = JSON.stringify(greedyColoring(generateGraph(30, 50)));
+exports.sudoku = JSON.stringify(
+  greedyColoring(parseData(readFile("sudoku.txt")))
+);
+
+// generation of sudoku graph
+/*
+let a = Array(81);
+a = [...a].map(() => []);
+
+for (let i = 0; i < a.length; i++) {
+  for (let j = 0; j < 9; j++) {
+    if (i != (i % 9) + j * 9) a[i].push((i % 9) + j * 9);
+    if (i != Math.floor(i / 9) * 9 + j) a[i].push(Math.floor(i / 9) * 9 + j);
+  }
+  let y = Math.floor(i / 27);
+  let x = Math.floor(i / 3) % 3;
+  if (i != 27 * y + 3 * x) a[i].push(27 * y + 3 * x);
+  if (i != 27 * y + 3 * x + 1) a[i].push(27 * y + 3 * x + 1);
+  if (i != 27 * y + 3 * x + 2) a[i].push(27 * y + 3 * x + 2);
+  if (i != 27 * y + 3 * x + 9) a[i].push(27 * y + 3 * x + 9);
+  if (i != 27 * y + 3 * x + 10) a[i].push(27 * y + 3 * x + 10);
+  if (i != 27 * y + 3 * x + 11) a[i].push(27 * y + 3 * x + 11);
+  if (i != 27 * y + 3 * x + 18) a[i].push(27 * y + 3 * x + 18);
+  if (i != 27 * y + 3 * x + 19) a[i].push(27 * y + 3 * x + 19);
+  if (i != 27 * y + 3 * x + 20) a[i].push(27 * y + 3 * x + 20);
+  a[i] = a[i].filter((x) => x != i);
+  a[i].sort((a, b) => a - b);
+  a[i] = [...new Set(a[i])];
+}
+writeFile("sudoku.txt", stringifyData(a));
+console.table(a);
+
+console.table(greedyColoring(parseData(readFile("sudoku.txt"))));
+*/

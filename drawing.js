@@ -61,3 +61,18 @@ const startGraph = () => {
 
   window.requestAnimationFrame(draw);
 };
+
+const startSudoku = () => {
+  for (let i = 0; i < graph.length; i++) {
+    let temp = graph[i][0];
+    graph[i][0] = {
+      color: temp,
+      x: 50 + 90 * (i % 9),
+      y: 50 + 90 * Math.floor(i / 9),
+    };
+
+    if (graph[i][0].color > colors) colors = graph[i][0].color;
+  }
+
+  window.requestAnimationFrame(draw);
+};
