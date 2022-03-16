@@ -12,7 +12,15 @@ app.get("/drawing.js", (req, res) => {
   res.sendFile(path.join(__dirname, "/drawing.js"));
 });
 
-app.get("/graph.json", (req, res) => {
+app.get("/sudoku.json", (req, res) => {
+  res.json(graph.sudoku);
+});
+
+app.get("/myciel4.json", (req, res) => {
+  res.json(graph.myciel4);
+});
+
+app.get("/random.json", (req, res) => {
   res.json(graph.random);
 });
 

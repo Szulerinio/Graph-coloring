@@ -1,10 +1,43 @@
 let graph;
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
+const startGraph = () => {
+  for (let i = 0; i < graph.length; i++) {
+    let temp = graph[i][0];
+    graph[i][0] = {
+      color: temp,
+      x: 600 + 380 * Math.sin((Math.PI * 2 * i) / graph.length),
+      y: 450 + 380 * Math.cos((Math.PI * 2 * i) / graph.length),
+    };
 
+    if (graph[i][0].color > settings.colors)
+      settings.colors = graph[i][0].color;
+  }
+
+  window.requestAnimationFrame(draw);
+};
+
+const startSudoku = () => {
+  for (let i = 0; i < graph.length; i++) {
+    let temp = graph[i][0];
+    graph[i][0] = {
+      color: temp,
+      x: 50 + 90 * (i % 9),
+      y: 50 + 90 * Math.floor(i / 9),
+    };
+
+    if (graph[i][0].color > settings.colors)
+      settings.colors = graph[i][0].color;
+  }
+
+  window.requestAnimationFrame(draw);
+};
 let settings = {
-  colors: 0,
   vertexSize: 24,
+  start: startSudoku,
+  // start: startGraph,
+  type: "sudoku",
+  colors: 0,
   pickedVertex: -1,
 };
 
@@ -47,7 +80,7 @@ const draw = (timeStamp) => {
   window.requestAnimationFrame(draw);
 };
 
-fetch("graph.json")
+fetch(`${settings.type}.json`)
   .then((response) => {
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);
@@ -56,41 +89,9 @@ fetch("graph.json")
   })
   .then((data) => (graph = JSON.parse(data)))
   .then(() => {
-    startGraph();
+    settings.start();
   })
   .catch((err) => console.error(`Fetch problem: ${err.message}`));
-
-const startGraph = () => {
-  for (let i = 0; i < graph.length; i++) {
-    let temp = graph[i][0];
-    graph[i][0] = {
-      color: temp,
-      x: 600 + 380 * Math.sin((Math.PI * 2 * i) / graph.length),
-      y: 450 + 380 * Math.cos((Math.PI * 2 * i) / graph.length),
-    };
-
-    if (graph[i][0].color > settings.colors)
-      settings.colors = graph[i][0].color;
-  }
-
-  window.requestAnimationFrame(draw);
-};
-
-const startSudoku = () => {
-  for (let i = 0; i < graph.length; i++) {
-    let temp = graph[i][0];
-    graph[i][0] = {
-      color: temp,
-      x: 50 + 90 * (i % 9),
-      y: 50 + 90 * Math.floor(i / 9),
-    };
-
-    if (graph[i][0].color > settings.colors)
-      settings.colors = graph[i][0].color;
-  }
-
-  window.requestAnimationFrame(draw);
-};
 
 canvas.addEventListener("mousedown", mouseDown);
 canvas.addEventListener("mouseup", mouseUp);
