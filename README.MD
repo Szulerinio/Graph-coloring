@@ -40,7 +40,7 @@ writeFile("out.txt", stringifyData(generateGraph(40, 50)));
 #### New graph is generated on save (if appropriate function used)
 
 draw in browser
-
+http://localhost:3000
 ```javascript
 drawing.js;
 
