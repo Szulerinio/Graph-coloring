@@ -34,9 +34,11 @@ const startSudoku = () => {
 };
 let settings = {
   vertexSize: 24,
-  start: startSudoku,
-  // start: startGraph,
-  type: "sudoku",
+  start: startGraph,
+  // start: startSudoku,
+  type: "myciel4",
+  // type: "random",
+  // type: "sudoku",
   colors: 0,
   pickedVertex: -1,
 };
