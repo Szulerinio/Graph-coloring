@@ -15,7 +15,12 @@ const writeFile = (name, data) => {
 
 const parseData = (data) => {
   //generates table
-  const dataArray = data.replace(/\r\n/g, " ").trim().split(" ");
+  const dataArray = data
+    .replace(/\r\n/g, " ")
+    .replace(/\n/g, " ")
+    .trim()
+    .split(" ");
+
   let graphTable = [...Array(dataArray[0] - 0)].map(() => []); //make an array of given size, and fill it with empty arrays
 
   for (let i = 1; i < dataArray.length; i += 2) {
