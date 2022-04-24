@@ -100,15 +100,44 @@ const greedyColoring = (graphData) => {
 };
 
 // console.table(greedyColoring(generateGraph(40, 50)));
-console.table(greedyColoring(parseData(readFile("myciel4.txt"))));
+// console.table(greedyColoring(parseData(readFile("myciel4.txt"))));
+
+// wykonanie w terminalu
+const tempGraph = greedyColoring(parseData(readFile("le450_5a.txt")));
+let maxcolor = 0;
+for (let i = 0; i < tempGraph.length; i++) {
+  if (maxcolor < tempGraph[i][0]) {
+    maxcolor = tempGraph[i][0];
+  }
+}
+console.table(tempGraph);
+console.log(maxcolor);
+
+//wykonanie w terminalu
 
 exports.myciel4 = JSON.stringify(
   greedyColoring(parseData(readFile("myciel4.txt")))
 );
-exports.random = JSON.stringify(greedyColoring(generateGraph(30, 50)));
+exports.queen6 = JSON.stringify(
+  greedyColoring(parseData(readFile("queen6.txt")))
+);
+exports.gc500 = JSON.stringify(
+  greedyColoring(parseData(readFile("gc500.txt")))
+);
+exports.gc1000 = JSON.stringify(
+  greedyColoring(parseData(readFile("gc_1000.txt")))
+);
+exports.miles250 = JSON.stringify(
+  greedyColoring(parseData(readFile("miles250.txt")))
+);
+exports.le450 = JSON.stringify(
+  greedyColoring(parseData(readFile("le450_5a.txt")))
+);
+
 exports.sudoku = JSON.stringify(
   greedyColoring(parseData(readFile("sudoku.txt")))
 );
+exports.random = JSON.stringify(greedyColoring(generateGraph(30, 50)));
 
 // generation of sudoku graph
 /*
