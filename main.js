@@ -1,7 +1,4 @@
 const fs = require("fs");
-console.log(
-  "==============================================reloaded!=============================================="
-);
 
 function randomInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -21,7 +18,7 @@ const parseData = (data) => {
     .trim()
     .split(" ");
 
-  let graphTable = [...Array(dataArray[0] - 0)].map(() => []); //make an array of given size, and fill it with empty arrays
+  let graphTable = [...Array(parseInt(dataArray[0]))].map(() => []); //make an array of given size, and fill it with empty arrays
 
   for (let i = 1; i < dataArray.length; i += 2) {
     graphTable[dataArray[i] - 1].push(dataArray[i + 1] - 1);
@@ -69,7 +66,7 @@ const generateGraph = (size, saturation) => {
   while (edgeCount < maxEdgeCount) {
     const vertexX = randomInteger(0, size - 1);
     const vertexY = randomInteger(0, size - 1);
-    if (vertexX != vertexY && !graphTable[vertexX].includes(vertexY)) {
+    if (vertexX !== vertexY && !graphTable[vertexX].includes(vertexY)) {
       graphTable[vertexX].push(vertexY);
       graphTable[vertexY].push(vertexX);
       edgeCount++;
@@ -93,7 +90,7 @@ const greedyColoring = (graphData) => {
     let lowestFreeColor = 1;
     for (let j = 1; j < coloredGraph[i].length; j++) {
       const inspectedIndex = coloredGraph[i][j];
-      if (lowestFreeColor == coloredGraph[inspectedIndex][0]) {
+      if (lowestFreeColor === coloredGraph[inspectedIndex][0]) {
         j = 0;
         lowestFreeColor++;
       }
@@ -115,6 +112,9 @@ for (let i = 0; i < tempGraph.length; i++) {
     maxcolor = tempGraph[i][0];
   }
 }
+console.log(
+    "==============================================reloaded!=============================================="
+);
 console.table(tempGraph);
 console.log(maxcolor);
 
