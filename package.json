@@ -3,15 +3,17 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "onchange -i -k \"**/*.js\" -- node  \"index.js\""
-
+    "start-watch": "npx nodemon ./index.js localhost 5000",
+    "start": "node index.js"
   },
   "dependencies": {
     "express": "^4.17.3",
-    "onchange": "^7.1.0"
+    "npm": "^8.12.1"
   },
-  "devDependencies": {},
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
 }

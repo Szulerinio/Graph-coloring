@@ -12,12 +12,10 @@ Start
 npm run start
 ```
 
-If you are getting errors on start try to change scripts in package.json to:
+Start with rerun on save
 
-```json
-  "scripts": {
-    "start":"./node_modules/.bin/onchange.cmd -i -k \"**/*.js\" -- node \"index.js\""
-  },
+```
+npm run start-watch
 ```
 
 ## Usage
@@ -41,6 +39,7 @@ writeFile("out.txt", stringifyData(generateGraph(40, 50)));
 
 draw in browser
 http://localhost:3000
+
 ```javascript
 drawing.js;
 
