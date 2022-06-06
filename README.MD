@@ -1,4 +1,4 @@
-#Grap-coloring
+# Grap-coloring
 
 University project for combinatorial optimization class.
 
