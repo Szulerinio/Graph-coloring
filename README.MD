@@ -1,3 +1,14 @@
+#Grap-coloring
+
+University project for combinatorial optimization class.
+
+The goal of the project is to explore solutions to the Graph Coloring Problem.
+
+It implements Greedy coloring algorithm and tabu search metaheuristic.
+It also has a tool that visualizes the colored graph.
+
+
+
 ## Installation
 
 Use npm
