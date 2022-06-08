@@ -12,11 +12,7 @@ const writeFile = (name, data) => {
 
 const parseData = (data) => {
   //generates table
-  const dataArray = data
-    .replace(/\r\n/g, " ")
-    .replace(/\n/g, " ")
-    .trim()
-    .split(" ");
+  const dataArray = data.replace(/\r\n/g, " ").replace(/\n/g, " ").trim().split(" ");
 
   let graphTable = [...Array(parseInt(dataArray[0]))].map(() => []); //make an array of given size, and fill it with empty arrays
 
@@ -49,9 +45,7 @@ const generateGraph = (size, saturation) => {
   }
   if (saturation < Math.ceil(2 / size)) {
     console.log(
-      `By zapewnić spójność grafu o rozmiarze ${size} wymagana jest saturacja na poziomie ${Math.ceil(
-        2 / size
-      )}%`
+      `By zapewnić spójność grafu o rozmiarze ${size} wymagana jest saturacja na poziomie ${Math.ceil(2 / size)}%`
     );
     return;
   }
@@ -127,10 +121,9 @@ const getFirstWithCollision = (graph, collidingColor) => {
 };
 
 const initializeTabuColoring = (graph, numberOfColorsToAchieve) => {
-  let collisionArray = new Array(numberOfColorsToAchieve + 1);
   const affectedVertices = chooseVerticesToColor(graph, numberOfColorsToAchieve);
 
-  countCollisionsWithEachColors(graph, affectedVertices, collisionArray, numberOfColorsToAchieve);
+  const collisionArray = countCollisionsWithEachColors(graph, affectedVertices, numberOfColorsToAchieve);
 
   return changeColorToColorWithLowestNumberOfCollsions(graph, affectedVertices, collisionArray);
 };
@@ -143,22 +136,23 @@ const chooseVerticesToColor = (graph, numberOfColorsToAchieve) => {
     }
   }
   return affectedVertices;
-}
+};
 
-const countCollisionsWithEachColors = (graph, affectedVertices, collisionArray, numberOfColorsToAchieve) => {
+const countCollisionsWithEachColors = (graph, affectedVertices, numberOfColorsToAchieve) => {
+  const collisionArray = new Array(numberOfColorsToAchieve + 1);
   for (let currentColor = 1; currentColor <= numberOfColorsToAchieve; currentColor++) {
-
     changeColorToNext(graph, affectedVertices, currentColor);
 
     collisionArray[currentColor] = countCollisions(graph, currentColor);
   }
-}
+  return collisionArray;
+};
 
 const changeColorToNext = (graph, affectedVertices, currentColor) => {
   for (const element of affectedVertices) {
     graph[element][0] = currentColor;
   } //zmień kolor wierzchołków na kolejny
-}
+};
 
 const countCollisions = (graph, currentColor) => {
   let counter = 0;
@@ -172,7 +166,7 @@ const countCollisions = (graph, currentColor) => {
     }
   }
   return counter;
-}
+};
 const changeColorToColorWithLowestNumberOfCollsions = (graph, affectedVertices, collisionArray) => {
   let choosenColorIndex = 1;
   let choosenColorValue = collisionArray[1];
@@ -186,16 +180,13 @@ const changeColorToColorWithLowestNumberOfCollsions = (graph, affectedVertices, 
     graph[element][0] = choosenColorIndex;
   }
   return choosenColorIndex;
-}
+};
 
 // console.table(greedyColoring(generateGraph(40, 50)));
 // console.table(greedyColoring(parseData(readFile("myciel4.txt"))));
 
 // wykonanie w terminalu
-const tabuGraph = tabuColoring(
-  greedyColoring(parseData(readFile("myciel4.txt"))),
-  4
-);
+const tabuGraph = tabuColoring(greedyColoring(parseData(readFile("myciel4.txt"))), 4);
 
 // const tempGraph = greedyColoring(parseData(readFile("myciel4.txt")));
 // let maxcolor = 0;
@@ -204,37 +195,21 @@ const tabuGraph = tabuColoring(
 //     maxcolor = tempGraph[i][0];
 //   }
 // }
-console.log(
-  "==============================================reloaded!=============================================="
-);
+console.log("==============================================reloaded!==============================================");
 // console.table(tempGraph);
 
 // console.log(maxcolor);
 
 //wykonanie w terminalu
 
-exports.myciel4 = JSON.stringify(
-  greedyColoring(parseData(readFile("myciel4.txt")))
-);
-exports.queen6 = JSON.stringify(
-  greedyColoring(parseData(readFile("queen6.txt")))
-);
-exports.gc500 = JSON.stringify(
-  greedyColoring(parseData(readFile("gc500.txt")))
-);
-exports.gc1000 = JSON.stringify(
-  greedyColoring(parseData(readFile("gc_1000.txt")))
-);
-exports.miles250 = JSON.stringify(
-  greedyColoring(parseData(readFile("miles250.txt")))
-);
-exports.le450 = JSON.stringify(
-  greedyColoring(parseData(readFile("le450_5a.txt")))
-);
+exports.myciel4 = JSON.stringify(greedyColoring(parseData(readFile("myciel4.txt"))));
+exports.queen6 = JSON.stringify(greedyColoring(parseData(readFile("queen6.txt"))));
+exports.gc500 = JSON.stringify(greedyColoring(parseData(readFile("gc500.txt"))));
+exports.gc1000 = JSON.stringify(greedyColoring(parseData(readFile("gc_1000.txt"))));
+exports.miles250 = JSON.stringify(greedyColoring(parseData(readFile("miles250.txt"))));
+exports.le450 = JSON.stringify(greedyColoring(parseData(readFile("le450_5a.txt"))));
 
-exports.sudoku = JSON.stringify(
-  greedyColoring(parseData(readFile("sudoku.txt")))
-);
+exports.sudoku = JSON.stringify(greedyColoring(parseData(readFile("sudoku.txt"))));
 exports.random = JSON.stringify(greedyColoring(generateGraph(7, 50)));
 
 // generation of sudoku graph
