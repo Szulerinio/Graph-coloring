@@ -95,17 +95,86 @@ const greedyColoring = (graphData) => {
   return coloredGraph;
 };
 
+const maxColoring = (graphData) => {
+  const coloredGraph = JSON.parse(JSON.stringify(graphData));
+  for (const element of coloredGraph) {
+    element.unshift(0);
+  }
+  for (let i = 0; i < coloredGraph.length; i++) {
+    coloredGraph[i][0] = i + 1;
+  }
+
+  return coloredGraph;
+};
+
 const tabuColoring = (graph, colors) => {
   console.table(graph); // jest mutowany
   const collidingColor = initializeTabuColoring(graph, colors);
   console.table(collidingColor);
   console.table(graph);
   let firstWithCollision = getFirstWithCollision(graph, collidingColor);
-  console.log(firstWithCollision);
+  let collisionArray = getCollisionsOfVertexForAllColors(firstWithCollision, graph, colors);
+  console.log("collisionArray", collisionArray);
   //zamiana mu kolor
+  colorVertexToBestColor(firstWithCollision, graph, collisionArray);
+
   // liczyć kolizje
+
+  console.log("aa", getCollisionsArray(graph, colors));
   // wrzucać na tabu
   // wybrać gdzie najmniej
+  console.table(graph);
+  return graph;
+};
+
+const colorVertexToBestColor = (index, graph, collisionArray) => {
+  let choosenColorIndex = 1;
+  let choosenColorValue = collisionArray[1];
+  for (let i = 2; i < collisionArray.length; i++) {
+    if (collisionArray[i] < choosenColorValue) {
+      choosenColorIndex = i;
+      choosenColorValue = collisionArray[i];
+    }
+  }
+  graph[index][0] = choosenColorIndex;
+};
+
+const getCollisionsOfVertexForAllColors = (index, graph, colors) => {
+  const collisionArray = [];
+  for (let i = 1; i <= colors; i++) {
+    graph[index][0] = i;
+    collisionArray[i] = getNumberOfCollisionsOfVertex(index, graph);
+  }
+  return collisionArray;
+};
+
+const getNumberOfCollisionsOfVertex = (index, graph) => {
+  let counter = 0;
+  for (let i = 1; i < graph[index].length; i++) {
+    if (graph[index][0] == graph[graph[index][i]][0]) {
+      counter++;
+    }
+  }
+  return counter;
+};
+
+const getCollisionsArray = (graph, colors) => {
+  const collisionArray = [];
+  for (let currentColor = 1; currentColor <= colors; currentColor++) {
+    let counter = 0;
+    for (let i = 0; i < graph.length; i++) {
+      if (graph[i][0] === currentColor) {
+        for (let j = 1; j < graph[i].length; j++) {
+          if (graph[graph[i][j]][0] === currentColor) {
+            counter++;
+          }
+        }
+      }
+    } // policz ilość kolizji dla danego koloru
+    collisionArray[currentColor] = counter;
+  } // iteruje przez kolory i zapisuje ilość kolizji do zmiennej colisionArray
+
+  return collisionArray;
 };
 
 const getFirstWithCollision = (graph, collidingColor) => {
@@ -122,8 +191,11 @@ const getFirstWithCollision = (graph, collidingColor) => {
 
 const initializeTabuColoring = (graph, numberOfColorsToAchieve) => {
   const affectedVertices = chooseVerticesToColor(graph, numberOfColorsToAchieve);
-
+  console.log("affectedVertices");
+  console.table(affectedVertices);
   const collisionArray = countCollisionsWithEachColors(graph, affectedVertices, numberOfColorsToAchieve);
+  console.log("collisionArray");
+  console.table(collisionArray);
 
   return changeColorToColorWithLowestNumberOfCollsions(graph, affectedVertices, collisionArray);
 };
@@ -186,7 +258,7 @@ const changeColorToColorWithLowestNumberOfCollsions = (graph, affectedVertices, 
 // console.table(greedyColoring(parseData(readFile("myciel4.txt"))));
 
 // wykonanie w terminalu
-const tabuGraph = tabuColoring(greedyColoring(parseData(readFile("myciel4.txt"))), 4);
+const tabuGraph = tabuColoring(maxColoring(parseData(readFile("tomasz.txt"))), 7);
 
 // const tempGraph = greedyColoring(parseData(readFile("myciel4.txt")));
 // let maxcolor = 0;
@@ -208,7 +280,7 @@ exports.gc500 = JSON.stringify(greedyColoring(parseData(readFile("gc500.txt"))))
 exports.gc1000 = JSON.stringify(greedyColoring(parseData(readFile("gc_1000.txt"))));
 exports.miles250 = JSON.stringify(greedyColoring(parseData(readFile("miles250.txt"))));
 exports.le450 = JSON.stringify(greedyColoring(parseData(readFile("le450_5a.txt"))));
-exports.tomasz = JSON.stringify(greedyColoring(parseData(readFile("tomasz.txt"))));
+exports.tomasz = JSON.stringify(tabuColoring(maxColoring(parseData(readFile("tomasz.txt"))), 7));
 
 exports.sudoku = JSON.stringify(greedyColoring(parseData(readFile("sudoku.txt"))));
 exports.random = JSON.stringify(greedyColoring(generateGraph(7, 50)));
