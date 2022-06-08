@@ -6,12 +6,11 @@ const startGraph = () => {
     let temp = graph[i][0];
     graph[i][0] = {
       color: temp,
-      x: 600 + 380 * Math.sin((Math.PI * 2 * i) / graph.length),
-      y: 450 + 380 * Math.cos((Math.PI * 2 * i) / graph.length),
+      x: 600 + 380 * -Math.cos((Math.PI * 2 * i) / graph.length),
+      y: 450 + 380 * -Math.sin((Math.PI * 2 * i) / graph.length),
     };
 
-    if (graph[i][0].color > settings.colors)
-      settings.colors = graph[i][0].color;
+    if (graph[i][0].color > settings.colors) settings.colors = graph[i][0].color;
   }
 
   window.requestAnimationFrame(draw);
@@ -26,8 +25,7 @@ const startSudoku = () => {
       y: 50 + 90 * Math.floor(i / 9),
     };
 
-    if (graph[i][0].color > settings.colors)
-      settings.colors = graph[i][0].color;
+    if (graph[i][0].color > settings.colors) settings.colors = graph[i][0].color;
   }
 
   window.requestAnimationFrame(draw);
@@ -36,7 +34,8 @@ let settings = {
   vertexSize: 24,
   start: startGraph,
   // start: startSudoku,
-  type: "myciel4",
+  // type: "myciel4",
+  type: "tomasz",
   // type: "queen6",
   // type: "gc500",
   // type: "gc1000",
@@ -46,6 +45,7 @@ let settings = {
   // type: "sudoku",
   colors: 0,
   pickedVertex: -1,
+  textOnVertex: "index", // index | color
 };
 
 ctx.font = "30px Arial";
@@ -67,21 +67,17 @@ const draw = (timeStamp) => {
   for (let i = 0; i < graph.length; i++) {
     ctx.beginPath();
     ctx.arc(graph[i][0].x, graph[i][0].y, settings.vertexSize, 0, 2 * Math.PI);
-    ctx.fillStyle = `rgb(${
-      (255 / settings.colors) * graph[i][0].color * (graph[i][0].color % 3)
-    },${
-      (255 / settings.colors) *
-      graph[i][0].color *
-      ((graph[i][0].color + 1) % 3)
-    },${
-      (255 / settings.colors) *
-      graph[i][0].color *
-      ((graph[i][0].color + 2) % 3)
-    })`;
+    ctx.fillStyle = `rgb(${(255 / settings.colors) * graph[i][0].color * (graph[i][0].color % 3)},${
+      (255 / settings.colors) * graph[i][0].color * ((graph[i][0].color + 1) % 3)
+    },${(255 / settings.colors) * graph[i][0].color * ((graph[i][0].color + 2) % 3)})`;
     ctx.fill();
     ctx.closePath();
     ctx.fillStyle = "black";
-    ctx.fillText("" + graph[i][0].color, graph[i][0].x - 8, graph[i][0].y + 10);
+    if (settings.textOnVertex == "color") {
+      ctx.fillText("" + graph[i][0].color, graph[i][0].x - 8, graph[i][0].y + 10);
+    } else {
+      ctx.fillText("" + i, graph[i][0].x - 8, graph[i][0].y + 10);
+    }
   }
 
   window.requestAnimationFrame(draw);
@@ -107,10 +103,7 @@ canvas.addEventListener("mousemove", mouseMove);
 function mouseDown(e) {
   console.log(e);
   for (let i = 0; i < graph.length; i++) {
-    if (
-      (e.offsetX - graph[i][0].x) ** 2 + (e.offsetY - graph[i][0].y) ** 2 <
-      settings.vertexSize ** 2
-    ) {
+    if ((e.offsetX - graph[i][0].x) ** 2 + (e.offsetY - graph[i][0].y) ** 2 < settings.vertexSize ** 2) {
       settings.pickedVertex = i;
       break;
     }

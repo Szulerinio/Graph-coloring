@@ -208,6 +208,7 @@ exports.gc500 = JSON.stringify(greedyColoring(parseData(readFile("gc500.txt"))))
 exports.gc1000 = JSON.stringify(greedyColoring(parseData(readFile("gc_1000.txt"))));
 exports.miles250 = JSON.stringify(greedyColoring(parseData(readFile("miles250.txt"))));
 exports.le450 = JSON.stringify(greedyColoring(parseData(readFile("le450_5a.txt"))));
+exports.tomasz = JSON.stringify(greedyColoring(parseData(readFile("tomasz.txt"))));
 
 exports.sudoku = JSON.stringify(greedyColoring(parseData(readFile("sudoku.txt"))));
 exports.random = JSON.stringify(greedyColoring(generateGraph(7, 50)));
