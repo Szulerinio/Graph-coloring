@@ -101,22 +101,99 @@ const greedyColoring = (graphData) => {
   return coloredGraph;
 };
 
+const tabuColoring = (graph, colors) => {
+  console.table(graph); // jest mutowany
+  const collidingColor = initializeTabuColoring(graph, colors);
+  console.table(collidingColor);
+  console.table(graph);
+  let firstWithCollision = getFirstWithCollision(graph, collidingColor);
+  console.log(firstWithCollision);
+  //zamiana mu kolor
+  // liczyć kolizje
+  // wrzucać na tabu
+  // wybrać gdzie najmniej
+};
+
+const getFirstWithCollision = (graph, collidingColor) => {
+  for (let i = 0; i < graph.length; i++) {
+    if (graph[i][0] === collidingColor) {
+      for (let j = 0; j < graph[i].length; j++) {
+        if (graph[graph[i][j]][0] === collidingColor) {
+          return i;
+        }
+      }
+    }
+  }
+  return;
+};
+
+const initializeTabuColoring = (graph, colors) => {
+  let collisionArray = new Array(colors + 1);
+  let affectedVertices = [];
+  // change all colors above given to 1
+
+  for (let i = 0; i < graph.length; i++) {
+    if (graph[i][0] > colors) {
+      affectedVertices.push(i);
+    }
+  } //zapisz które wierzchołki będziemy kolorować
+
+  for (currentColor = 1; currentColor <= colors; currentColor++) {
+    for (let i = 0; i < affectedVertices.length; i++) {
+      graph[affectedVertices[i]][0] = currentColor;
+    } //zmień kolor wierzchołków na kolejny
+
+    let counter = 0;
+    for (let i = 0; i < graph.length; i++) {
+      if (graph[i][0] === currentColor) {
+        for (let j = 1; j < graph[i].length; j++) {
+          if (graph[graph[i][j]][0] === currentColor) {
+            counter++;
+          }
+        }
+      }
+    } // policz ilość kolizji dla danego koloru
+    collisionArray[currentColor] = counter;
+  } // wybierz najlepszy kolor na początek dla wszystkich wierzchołków które zostały bez koloru po zmniejszeniu ich ilości
+
+  let choosenColorIndex = 1;
+  let choosenColorValue = collisionArray[1];
+  for (let i = 2; i < collisionArray.length; i++) {
+    if (collisionArray[i] < choosenColorValue) {
+      choosenColorIndex = i;
+      choosenColorValue = collisionArray[i];
+    }
+  }
+
+  for (let i = 0; i < affectedVertices.length; i++) {
+    graph[affectedVertices[i]][0] = choosenColorIndex;
+  } //zmień kolor wierzchołków na ten z najmniejszą ilością kolizji
+
+  return choosenColorIndex;
+};
+
 // console.table(greedyColoring(generateGraph(40, 50)));
 // console.table(greedyColoring(parseData(readFile("myciel4.txt"))));
 
 // wykonanie w terminalu
-const tempGraph = greedyColoring(parseData(readFile("le450_5a.txt")));
-let maxcolor = 0;
-for (let i = 0; i < tempGraph.length; i++) {
-  if (maxcolor < tempGraph[i][0]) {
-    maxcolor = tempGraph[i][0];
-  }
-}
-console.log(
-    "==============================================reloaded!=============================================="
+const tabuGraph = tabuColoring(
+  greedyColoring(parseData(readFile("myciel4.txt"))),
+  4
 );
-console.table(tempGraph);
-console.log(maxcolor);
+
+// const tempGraph = greedyColoring(parseData(readFile("myciel4.txt")));
+// let maxcolor = 0;
+// for (let i = 0; i < tempGraph.length; i++) {
+//   if (maxcolor < tempGraph[i][0]) {
+//     maxcolor = tempGraph[i][0];
+//   }
+// }
+console.log(
+  "==============================================reloaded!=============================================="
+);
+// console.table(tempGraph);
+
+// console.log(maxcolor);
 
 //wykonanie w terminalu
 
@@ -142,7 +219,7 @@ exports.le450 = JSON.stringify(
 exports.sudoku = JSON.stringify(
   greedyColoring(parseData(readFile("sudoku.txt")))
 );
-exports.random = JSON.stringify(greedyColoring(generateGraph(30, 50)));
+exports.random = JSON.stringify(greedyColoring(generateGraph(7, 50)));
 
 // generation of sudoku graph
 /*
