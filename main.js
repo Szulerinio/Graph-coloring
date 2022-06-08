@@ -32,8 +32,8 @@ const stringifyData = (data) => {
   dataString += "\r\n";
   for (let i = 0; i < data.length; i++) {
     let filteredSubArray = data[i].filter((element) => element > i);
-    for (let j = 0; j < filteredSubArray.length; j++) {
-      dataString += `${i + 1} ${filteredSubArray[j] + 1}`;
+    for (const element of filteredSubArray) {
+      dataString += `${i + 1} ${element + 1}`;
       dataString += "\r\n";
     }
   }
@@ -83,19 +83,19 @@ const generateGraph = (size, saturation) => {
 
 const greedyColoring = (graphData) => {
   const coloredGraph = JSON.parse(JSON.stringify(graphData));
-  for (let i = 0; i < coloredGraph.length; i++) {
-    coloredGraph[i].unshift(0);
+  for (const element of coloredGraph) {
+    element.unshift(0);
   }
-  for (let i = 0; i < coloredGraph.length; i++) {
+  for (const element of coloredGraph) {
     let lowestFreeColor = 1;
-    for (let j = 1; j < coloredGraph[i].length; j++) {
-      const inspectedIndex = coloredGraph[i][j];
+    for (let j = 1; j < element.length; j++) {
+      const inspectedIndex = element[j];
       if (lowestFreeColor === coloredGraph[inspectedIndex][0]) {
         j = 0;
         lowestFreeColor++;
       }
     }
-    coloredGraph[i][0] = lowestFreeColor;
+    element[0] = lowestFreeColor;
   }
 
   return coloredGraph;
@@ -117,45 +117,63 @@ const tabuColoring = (graph, colors) => {
 const getFirstWithCollision = (graph, collidingColor) => {
   for (let i = 0; i < graph.length; i++) {
     if (graph[i][0] === collidingColor) {
-      for (let j = 0; j < graph[i].length; j++) {
-        if (graph[graph[i][j]][0] === collidingColor) {
+      for (const element of graph[i]) {
+        if (graph[element][0] === collidingColor) {
           return i;
         }
       }
     }
   }
-  return;
 };
 
-const initializeTabuColoring = (graph, colors) => {
-  let collisionArray = new Array(colors + 1);
-  let affectedVertices = [];
-  // change all colors above given to 1
+const initializeTabuColoring = (graph, numberOfColorsToAchieve) => {
+  let collisionArray = new Array(numberOfColorsToAchieve + 1);
+  const affectedVertices = chooseVerticesToColor(graph, numberOfColorsToAchieve);
 
+  countCollisionsWithEachColors(graph, affectedVertices, collisionArray, numberOfColorsToAchieve);
+
+  return changeColorToColorWithLowestNumberOfCollsions(graph, affectedVertices, collisionArray);
+};
+
+const chooseVerticesToColor = (graph, numberOfColorsToAchieve) => {
+  let affectedVertices = [];
   for (let i = 0; i < graph.length; i++) {
-    if (graph[i][0] > colors) {
+    if (graph[i][0] > numberOfColorsToAchieve) {
       affectedVertices.push(i);
     }
-  } //zapisz które wierzchołki będziemy kolorować
+  }
+  return affectedVertices;
+}
 
-  for (currentColor = 1; currentColor <= colors; currentColor++) {
-    for (let i = 0; i < affectedVertices.length; i++) {
-      graph[affectedVertices[i]][0] = currentColor;
-    } //zmień kolor wierzchołków na kolejny
+const countCollisionsWithEachColors = (graph, affectedVertices, collisionArray, numberOfColorsToAchieve) => {
+  for (let currentColor = 1; currentColor <= numberOfColorsToAchieve; currentColor++) {
 
-    let counter = 0;
-    for (let i = 0; i < graph.length; i++) {
-      if (graph[i][0] === currentColor) {
-        for (let j = 1; j < graph[i].length; j++) {
-          if (graph[graph[i][j]][0] === currentColor) {
-            counter++;
-          }
+    changeColorToNext(graph, affectedVertices, currentColor);
+
+    collisionArray[currentColor] = countCollisions(graph, currentColor);
+  }
+}
+
+const changeColorToNext = (graph, affectedVertices, currentColor) => {
+  for (const element of affectedVertices) {
+    graph[element][0] = currentColor;
+  } //zmień kolor wierzchołków na kolejny
+}
+
+const countCollisions = (graph, currentColor) => {
+  let counter = 0;
+  for (const element of graph) {
+    if (element[0] === currentColor) {
+      for (let j = 1; j < element.length; j++) {
+        if (graph[element[j]][0] === currentColor) {
+          counter++;
         }
       }
-    } // policz ilość kolizji dla danego koloru
-    collisionArray[currentColor] = counter;
-  } // wybierz najlepszy kolor na początek dla wszystkich wierzchołków które zostały bez koloru po zmniejszeniu ich ilości
-
+    }
+  }
+  return counter;
+}
+const changeColorToColorWithLowestNumberOfCollsions = (graph, affectedVertices, collisionArray) => {
   let choosenColorIndex = 1;
   let choosenColorValue = collisionArray[1];
   for (let i = 2; i < collisionArray.length; i++) {
@@ -164,13 +182,11 @@ const initializeTabuColoring = (graph, colors) => {
       choosenColorValue = collisionArray[i];
     }
   }
-
-  for (let i = 0; i < affectedVertices.length; i++) {
-    graph[affectedVertices[i]][0] = choosenColorIndex;
-  } //zmień kolor wierzchołków na ten z najmniejszą ilością kolizji
-
+  for (const element of affectedVertices) {
+    graph[element][0] = choosenColorIndex;
+  }
   return choosenColorIndex;
-};
+}
 
 // console.table(greedyColoring(generateGraph(40, 50)));
 // console.table(greedyColoring(parseData(readFile("myciel4.txt"))));
