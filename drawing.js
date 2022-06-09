@@ -35,8 +35,8 @@ let settings = {
   start: startGraph,
   // start: startSudoku,
   // type: "myciel4",
-  type: "tomasz",
-  // type: "queen6",
+  // type: "tomasz",
+  type: "queen6",
   // type: "gc500",
   // type: "gc1000",
   // type: "miles250",
@@ -74,9 +74,9 @@ const draw = (timeStamp) => {
     ctx.closePath();
     ctx.fillStyle = "black";
     if (settings.textOnVertex == "color") {
-      ctx.fillText("" + graph[i][0].color, graph[i][0].x - 8, graph[i][0].y + 10);
+      ctx.fillText(graph[i][0].color + 1 + "", graph[i][0].x - 8, graph[i][0].y + 10);
     } else {
-      ctx.fillText("" + i, graph[i][0].x - 8, graph[i][0].y + 10);
+      ctx.fillText(i + 1 + "", graph[i][0].x - 8, graph[i][0].y + 10);
     }
   }
 

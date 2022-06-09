@@ -13,29 +13,29 @@ app.get("/drawing.js", (req, res) => {
 });
 
 app.get("/sudoku.json", (req, res) => {
-  res.json(graph.sudoku);
+  res.json(graph.sudoku());
 });
 
 app.get("/myciel4.json", (req, res) => {
-  res.json(graph.myciel4);
+  res.json(graph.myciel4());
 });
 app.get("/queen6.json", (req, res) => {
-  res.json(graph.queen6);
+  res.json(graph.queen6());
 });
 app.get("/gc500.json", (req, res) => {
-  res.json(graph.gc500);
+  res.json(graph.gc500());
 });
 app.get("/gc1000.json", (req, res) => {
-  res.json(graph.gc1000);
+  res.json(graph.gc1000());
 });
 app.get("/miles250.json", (req, res) => {
-  res.json(graph.miles250);
+  res.json(graph.miles250());
 });
 app.get("/le450.json", (req, res) => {
-  res.json(graph.le450);
+  res.json(graph.le450());
 });
 app.get("/tomasz.json", (req, res) => {
-  res.json(graph.tomasz);
+  res.json(graph.tomasz());
 });
 
 app.get("/random.json", (req, res) => {
