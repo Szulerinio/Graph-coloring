@@ -111,35 +111,50 @@ const maxColoring = (graphData) => {
 
 const runTabu = (graph, colors) => {
   let wynik = [];
-  let a = 5;
   let max = 0;
   for(let i = 0; i < graph.length; i++) {
     if(graph[i][0] > max) max = graph[i][0];
-  } //greedy
-  console.time("a");
-  let colorStep = Math.floor(max / 20);
-  let i = max;
-  while(true) {
-    let numberOfColors = 0;
-    console.log("koloruję na ", i, "kolorów");
-    wynik = tabuColoring(graph, i);
-    if (wynik === -1) {
-      colorStep = Math.floor(colorStep / 2)
-      if (colorStep === 1) {
-        i++;
-      } else {
-        i += colorStep + 1;
-      }
-    } else {
-      if (colorStep === 1) {
-        i--;
-      } else {
-        i = i - colorStep;
-      }
-      //console.table(wynik);
-    }
   }
+  let colorStep = Math.ceil(max / 20);
+  let i = max;
+  const t2 = performance.now();
+  while(true) {
+    console.log("koloruję na ", i, "kolorów");
+    const t0 = performance.now();
+    wynik = tabuColoring(graph, i);
+    const t1 = performance.now();
+    for(let j = 0; j < wynik.length; j++) {
+      if(wynik[j][0] > i) console.log("no lipa");
+    }
+    console.log(t1-t0);
+    if(t1 - t0 > 15000 && t1-t0 < 60000 && colorStep > 3) {
+      colorStep = Math.floor(colorStep / 2);
+      i -= colorStep;
+    }
+    else if(t1 - t0 > 60000) {
+      colorStep = 1;
+      i--;
+    } else {
+      i -= colorStep;
+    }
+    // } else {
+    //   if (wynik === -1) {
+    //     colorStep = Math.floor(colorStep / 2)
+    //     if (colorStep === 1) {
+    //       i++;
+    //     } else {
+    //       i += colorStep + 1;
+    //     }
+    //   } else {
+    //     if (colorStep === 1) {
+    //       i--;
+    //     } else {
+    //       i = i - colorStep;
+    //     }
+      }
   console.timeEnd("a");
+  const t3 = performance.now()
+  console.log("koniec",t3-t2);
   return wynik;
 };
 let time = 60000;
@@ -148,23 +163,29 @@ const tabuColoring = (graph, colors) => {
   const collidingColor = initializeTabuColoring(graph, colors);
   // console.table(graph); // jest mutowany
 
-  let flag = true;
+  let flag = true;getCollisionsArray()
   let vertexWithCollision;
   let count = 0;
 
   let tabuList = [];
-  const t0 = performance.now();
+  let dynamicTabuLength = graph.length * 3.5;
+  let t0 = performance.now();
+  let previousVertex = 0;
   while (true) {
     count++;
-
     const t1 = performance.now();
-    if(t1 - t0 >= time) {
-      time += 30000;
-      return -1;
-    }
+    //y
+    // if(t1 - t0 > 30000 && t1- t0 <= 45000) {
+    //   dynamicTabuLength = graph.length * 3;
+    // }
+    // if(t1 - t0 > 45000) {
+    //   dynamicTabuLength = graph.length * 7.5;
+    //   console.log("trz", t1 - t0);
+    //   t0 = performance.now();
+    // }
     // console.log("flag", flag);
     if (flag) {
-      vertexWithCollision = getFirstWithCollision(graph);
+      vertexWithCollision = getFirstWithCollision(graph, previousVertex);
       if (vertexWithCollision === -1) {
         console.log("Graph is colored");
         return graph;
@@ -175,15 +196,18 @@ const tabuColoring = (graph, colors) => {
       //zamiana mu kolor
       let collisionCount = colorVertexToBestColor(vertexWithCollision, graph, collisionArray, tabuList);
       tabuList.push([vertexWithCollision, graph[vertexWithCollision][0]]);
-      if (tabuList.length > graph.length*3) tabuList.shift();
+      if (tabuList.length > dynamicTabuLength) tabuList.shift();
       // console.log("tabuList");
       // console.table(tabuList);
       // console.log("collisionArray", collisionArray);
       // console.table(graph);
 
       if (collisionCount === 0) {
+        previousVertex = vertexWithCollision;
         continue;
+
       } else {
+        previousVertex = 0;
         flag = false;
       }
     } else {
@@ -200,7 +224,7 @@ const tabuColoring = (graph, colors) => {
       //zamiana mu kolor
       let collisionCount = colorVertexToBestColor(nextWithCollision, graph, collisionArray, tabuList);
       tabuList.push([nextWithCollision, graph[nextWithCollision][0]]);
-      if (tabuList.length > graph.length*3) tabuList.shift();
+      if (tabuList.length > dynamicTabuLength) tabuList.shift();
       // console.log("tabuList");
       // console.table(tabuList);
       // console.log("collisionArray", collisionArray);
@@ -285,8 +309,8 @@ const getCollisionsArray = (graph, colors) => {
   return collisionArray;
 };
 
-const getFirstWithCollision = (graph) => {
-  for (let i = 0; i < graph.length; i++) {
+const getFirstWithCollision = (graph, previousVertex) => {
+  for (let i = previousVertex; i < graph.length; i++) {
     for (let j = 1; j < graph[i].length; j++) {
       if (graph[i][0] === graph[graph[i][j]][0]) {
         return i;
@@ -385,13 +409,13 @@ console.log("==============================================reloaded!============
 // exports.tomasz = () => JSON.stringify(tabuColoring(maxColoring(parseData(readFile("tomasz.txt"))), 4));
 // exports.sudoku = () => JSON.stringify(greedyColoring(parseData(readFile("sudoku.txt"))));
 
-exports.myciel4 = () => JSON.stringify(tabuColoring(maxColoring(parseData(readFile("myciel4.txt"))), 6));
+exports.myciel4 = () => JSON.stringify(maxColoring(parseData(readFile("myciel4.txt"))));
 exports.queen6 = () => JSON.stringify(greedyColoring(parseData(readFile("queen6.txt"))));
-exports.gc500 = () => JSON.stringify(runTabu(greedyColoring(parseData(readFile("gc500.txt"))), 50));
-exports.gc1000 = () => JSON.stringify(greedyColoring(parseData(readFile("gc_1000.txt"))));
+exports.gc500 = () => JSON.stringify(greedyColoring(parseData(readFile("gc500.txt"))));
+exports.gc1000 = () => JSON.stringify(runTabu(greedyColoring(parseData(readFile("gc_1000.txt"))), 1));
 exports.miles250 = () => JSON.stringify(greedyColoring(parseData(readFile("miles250.txt"))));
-exports.le450 = () => JSON.stringify(greedyColoring(parseData(readFile("le450_5a.txt"))));
-exports.tomasz = () => JSON.stringify(tabuColoring(maxColoring(parseData(readFile("tomasz.txt"))), 4));
+exports.le450 = () => JSON.stringify(runTabu(greedyColoring(parseData(readFile("le450_5a.txt"))), 1));
+exports.tomasz = () => JSON.stringify(maxColoring(parseData(readFile("tomasz.txt"))));
 exports.sudoku = () => JSON.stringify(greedyColoring(parseData(readFile("sudoku.txt"))));
 exports.random = () => JSON.stringify(greedyColoring(generateGraph(7, 50)));
 
