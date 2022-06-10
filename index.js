@@ -37,7 +37,9 @@ app.get("/le450.json", (req, res) => {
 app.get("/tomasz.json", (req, res) => {
   res.json(graph.tomasz());
 });
-
+app.get("/testgraph.json", (req, res) => {
+  res.json(graph.testgraph());
+});
 app.get("/random.json", (req, res) => {
   res.json(graph.random);
 });
